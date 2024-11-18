@@ -1,104 +1,134 @@
-import { createRef, useEffect } from 'react';
-import cytoscape from "cytoscape"; // TODO: import errors??
+import { CallGraph } from '@/components/graph';
+import { Button } from '@/components/ui/button';
+import {
+  Menu,
+  ChartNetwork,
+  Search,
+  Table,
+  RotateCw,
+  FileDown,
+  FileJson,
+  FileImage
+} from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuCheckboxItem
+} from './components/ui/dropdown-menu';
+import { useState } from 'react';
+import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
+//type Layout = "euler" | "concentric" | "cola" | "cose" | "breadth-first" | "circle" | "grid";
 
 function App() {
-  const cy = createRef<HTMLDivElement>();
-
-  useEffect(() => {
-    const cy = document.getElementById("id"); // TODO: fix!
-
-    cytoscape({
-      container: cy,
-      elements: [ // flat array of nodes and edges
-        { // node n1
-          group: 'nodes', // 'nodes' for a node, 'edges' for an edge
-          // NB the group field can be automatically inferred for you but specifying it
-          // gives you nice debug messages if you mis-init elements
-    
-    
-          data: { // element data (put json serialisable dev data here)
-            id: 'n1', // mandatory (string) id for each element, assigned automatically on undefined
-            parent: 'nparent', // indicates the compound node parent id; not defined => no parent
-            // (`parent` can be effectively changed by `eles.move()`)
-          },
-    
-          // scratchpad data (usually temp or nonserialisable data)
-          scratch: {
-            _foo: 'bar' // app fields prefixed by underscore; extension fields unprefixed
-          },
-    
-          position: { // the model position of the node (optional on init, mandatory after)
-            x: 100,
-            y: 100
-          },
-    
-          selected: false, // whether the element is selected (default false)
-    
-          selectable: true, // whether the selection state is mutable (default true)
-    
-          locked: false, // when locked a node's position is immutable (default false)
-    
-          grabbable: true, // whether the node can be grabbed and moved by the user
-    
-          pannable: false, // whether dragging the node causes panning instead of grabbing
-    
-          classes: ['foo', 'bar'], // an array (or a space separated string) of class names that the element has
-    
-          // DO NOT USE THE `style` FIELD UNLESS ABSOLUTELY NECESSARY
-          // USE THE STYLESHEET INSTEAD
-          style: { // style property overrides 
-            'background-color': 'blue'
-          }
-        },
-    
-        { // node n2
-          data: { id: 'n2' },
-          renderedPosition: { x: 200, y: 200 } // can alternatively specify position in rendered on-screen pixels
-        },
-    
-        { // node n3
-          data: { id: 'n3', parent: 'nparent' },
-          position: { x: 123, y: 234 }
-        },
-    
-        { // node nparent
-          data: { id: 'nparent' }
-        },
-    
-        { // edge e1
-          data: {
-            id: 'e1',
-            // inferred as an edge because `source` and `target` are specified:
-            source: 'n1', // the source node id (edge comes from this node)
-            target: 'n2'  // the target node id (edge goes to this node)
-            // (`source` and `target` can be effectively changed by `eles.move()`)
-          },
-    
-          pannable: true // whether dragging on the edge causes panning
-        }
-      ],
-    
-      layout: {
-        name: 'preset'
-      },
-    
-      // so we can see the ids
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'label': 'data(id)'
-          }
-        }
-      ]
-    
-    })
-  }, [cy]);
+  const [visibility, setVisibility] = useState("none");
+  const [layout, setLayout] = useState<string>("euler");
+  const [showSCC, setShowSCC] = useState<Checked>(true);
 
   return (
-    <>
-    <div style={{ width: "100vw", height: "100vh" }} id="id" ref={cy}></div>
-    </>
+    <div className="relative">
+      <CallGraph className="w-dvw h-dvh" />
+      <div className="absolute top-0 left-0 m-4">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon"><Menu /></Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="start">     
+          <DropdownMenuItem>
+            <Search />
+            <span>Search</span>
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+
+          <DropdownMenuLabel>Settings</DropdownMenuLabel>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuRadioGroup value={visibility} onValueChange={setVisibility}>
+            <DropdownMenuRadioItem value="none">Hide Attributes</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="non-cachable">Show Non-Cachable Attributes</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="heat-map">Show Heatmap</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuCheckboxItem checked={showSCC} onCheckedChange={setShowSCC}>Show Reachability</DropdownMenuCheckboxItem>
+
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <ChartNetwork />
+              <span>Layout</span>
+            </DropdownMenuSubTrigger>
+
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup value={layout} onValueChange={setLayout}>
+                  <DropdownMenuRadioItem value="euler">Euler Layout</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="concentric">Concentric Layout</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="cola">Cola Layout</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="cose">Cose Layout</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="breadth-first">Breadth-first Layout</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="circle">Circle Layout</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="grid">Grid Layout</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuLabel>Other</DropdownMenuLabel>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem>
+            <RotateCw />
+            <span>Refresh</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Table />
+            <span>Show Statistics</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <FileDown />
+              <span>Export</span>
+            </DropdownMenuSubTrigger>
+
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>
+                  <FileImage />
+                  <span>Image</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>
+                  <FileJson />
+                  <span>JSON</span>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      </div>
+    </div>
   )
 }
 
