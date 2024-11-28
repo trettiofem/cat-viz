@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button";
 import {
-    Menu,
     ChartNetwork,
-    Search,
     Table,
-    RotateCw,
     FileDown,
     FileJson,
-    FileImage
+    FileImage,
+    Settings2
 } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
     DropdownMenuContent,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuItem,
     DropdownMenuSubTrigger,
@@ -21,75 +18,31 @@ import {
     DropdownMenuPortal,
     DropdownMenuSub,
     DropdownMenuRadioGroup,
-    DropdownMenuRadioItem
+    DropdownMenuRadioItem,
+    DropdownMenuCheckboxItem,
+    DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
-import { useContext, useState } from "react";
-import {
-    RootContext,
-    type Layout,
-    type HighlightMode
-} from "@/lib/state/context";
+import { useContext } from "react";
+import { RootContext, type Layout } from "@/lib/state/context";
 
 export function SettingsMenu() {
     const root = useContext(RootContext);
     if (!root) throw new Error("Root context not initialized.");
 
-    const [visibility, setVisibility] = useState("none"); // TODO: type
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
-                    <Menu />
+                    <Settings2 />
                 </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuItem>
-                    <Search />
-                    <span>Search</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuLabel>Attributes</DropdownMenuLabel>
-
-                <DropdownMenuRadioGroup
-                    value={visibility}
-                    onValueChange={setVisibility}
-                >
-                    <DropdownMenuRadioItem value="none">
-                        Hide Attributes
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="non-cachable">
-                        Show Non-Cachable Attributes
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="heat-map">
-                        Show Heatmap
-                    </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuLabel>Highlighting</DropdownMenuLabel>
-
-                <DropdownMenuRadioGroup
-                    value={root.highlightMode}
-                    onValueChange={(value: string) =>
-                        root.update({ ...root, highlightMode: value as HighlightMode })
-                    }
-                >
-                    <DropdownMenuRadioItem value="reachability">
-                        Reachability
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="scc">
-                        SCC
-                    </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-
-                <DropdownMenuSeparator />
-
                 <DropdownMenuSub>
+                    <DropdownMenuLabel>Settings</DropdownMenuLabel>
+
+                    <DropdownMenuSeparator />
+
                     <DropdownMenuSubTrigger>
                         <ChartNetwork />
                         <span>Layout</span>
@@ -100,7 +53,10 @@ export function SettingsMenu() {
                             <DropdownMenuRadioGroup
                                 value={root.layout}
                                 onValueChange={(value: string) =>
-                                    root.update({ ...root, layout: value as Layout })
+                                    root.update({
+                                        ...root,
+                                        layout: value as Layout
+                                    })
                                 }
                             >
                                 <DropdownMenuRadioItem value="cose">
@@ -120,16 +76,24 @@ export function SettingsMenu() {
                     </DropdownMenuPortal>
                 </DropdownMenuSub>
 
-                <DropdownMenuItem>
-                    <Table />
-                    <span>Show Statistics</span>
-                </DropdownMenuItem>
+                <DropdownMenuCheckboxItem
+                    checked={root.panViewport}
+                    onCheckedChange={(value) =>
+                        root.update({ ...root, panViewport: value })
+                    }
+                >
+                    Pan Viewport
+                </DropdownMenuCheckboxItem>
+
+                <DropdownMenuSeparator />
+                
+                <DropdownMenuLabel>Other</DropdownMenuLabel>
 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem>
-                    <RotateCw />
-                    <span>Refresh</span>
+                    <Table />
+                    <span>Show Statistics</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuSub>

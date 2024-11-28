@@ -1,11 +1,14 @@
 import { ReactNode, useState } from "react";
 import { RootState, RootContext } from "./context";
+import { fetchCallGraph } from "../temp";
 
 export function RootStateProvider({ children }: { children?: ReactNode }) {
     const [rootState, setRootState] = useState<RootState>({
+        graph: fetchCallGraph(),
         layout: "cose",
-        highlightMode: "reachability",
-        highlightNode: "",
+        highlightedNode: "",
+        panViewport: true,
+        depth: "method",
         update: (next: RootState) => {
             setRootState(next);
         }

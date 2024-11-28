@@ -1,5 +1,16 @@
 import cytoscape from "cytoscape";
 
+const palette = {
+    "default": "#fbbf24",
+    "entry-point": "#a3e635",
+    "constructor": "#34d399",
+    "static-initializer": "#818cf8",
+
+    "edge": "#d4d4d8",
+    "unhighlighted": "#a1a1aa",
+    "highlighted": "#f43f5e"
+};
+
 export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
     wheelSensitivity: 0.1,
     elements: [],
@@ -7,7 +18,7 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
         {
             selector: "node",
             style: {
-                "background-color": "#f59e0b",
+                "background-color": palette.default,
                 width: "16px",
                 height: "16px",
                 label: "data(id)",
@@ -19,86 +30,65 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
                 "text-background-color": "black", // Set the background color for label
                 "text-background-opacity": 0.5,
                 "text-background-padding": "1px", // Padding around the label
-                "text-background-shape": "roundrectangle" // Shape of the background
-            }
+                "text-background-shape": "roundrectangle", // Shape of the background
+            },
         },
         {
-            selector: ".syn",
+            selector: ".entry-point",
             style: {
-                "background-color": "rgb(91, 154, 139)"
-            }
+                "background-color": palette["entry-point"],
+            },
         },
         {
-            selector: ".inh",
+            selector: ".constructor",
             style: {
-                "background-color": "rgb(247, 233, 135)"
-            }
+                "background-color": palette.constructor,
+            },
         },
         {
-            selector: ".collection",
+            selector: ".static-initializer",
             style: {
-                "border-color": "red",
-                "border-width": "2px",
-                "border-style": "solid"
-            }
-        },
-        {
-            selector: ".circular",
-            style: {
-                "background-color": "rgb(178, 6, 0)",
-                color: "white",
-                "border-color": "rgb(178, 6, 0)",
-                "border-width": "2px",
-                "border-style": "solid"
-            }
-        },
-        {
-            selector: ".bridge",
-            style: {
-                "background-color": "rgb(222, 2, 196)",
-                color: "white",
-                "border-color": "rgb(222, 2, 196)",
-                "border-width": "2px",
-                "border-style": "solid"
-            }
+                "background-color": palette["static-initializer"],
+            },
         },
         {
             selector: "edge",
             style: {
-                "line-color": "#bbb",
-                "target-arrow-color": "#bbb",
+                "line-color": palette.edge,
+                "target-arrow-color": palette.edge,
                 "target-arrow-shape": "chevron",
                 width: 1,
                 "curve-style": "straight",
-                "arrow-scale": 0.5
-            }
+                "arrow-scale": 0.5,
+            },
         },
         {
             selector: ".start-node",
             style: {
-                "border-color": "pink",
+                "border-color": palette.highlighted,
+                "border-opacity": 0.5,
                 "border-width": "2px",
                 "border-style": "solid",
-                "border-position": "outside"
-            }
+                "border-position": "outside",
+            },
         },
         {
             selector: ".highlighted",
             style: {
-                "background-color": "red"
-            }
+                "background-color": palette.highlighted,
+            },
         },
         {
             selector: ".unhighlighted",
             style: {
-                "background-color": "#ddd"
-            }
+                "background-color": palette.unhighlighted,
+            },
         },
         {
             selector: ".hidden",
             style: {
-                display: "none"
-            }
-        }
-    ]
+                display: "none",
+            },
+        },
+    ],
 };
