@@ -8,7 +8,7 @@ const cg: CallGraph = {
             line: 4,
             paramTypes: [],
             kind: "entry-point",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "H", method: "H()" },
@@ -16,7 +16,7 @@ const cg: CallGraph = {
             line: 0,
             paramTypes: [],
             kind: "constructor",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "F", method: "F()" },
@@ -24,7 +24,7 @@ const cg: CallGraph = {
             line: 0,
             paramTypes: [],
             kind: "constructor",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "C", method: "C()" },
@@ -32,7 +32,7 @@ const cg: CallGraph = {
             line: 0,
             paramTypes: [],
             kind: "constructor",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "A", method: "A()" },
@@ -40,7 +40,7 @@ const cg: CallGraph = {
             line: 0,
             paramTypes: [],
             kind: "constructor",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "java.lang", class: "Object", method: "<init>()" },
@@ -48,7 +48,7 @@ const cg: CallGraph = {
             line: 0,
             paramTypes: [],
             kind: "constructor",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "C", method: "clinit<>" },
@@ -56,7 +56,7 @@ const cg: CallGraph = {
             line: 33,
             paramTypes: [],
             kind: "static-initializer",
-            visibility: "static",
+            visibility: "static"
         },
         {
             id: { package: "", class: "G", method: "G()" },
@@ -64,7 +64,7 @@ const cg: CallGraph = {
             line: 0,
             paramTypes: [],
             kind: "constructor",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "C", method: "m()" },
@@ -72,7 +72,7 @@ const cg: CallGraph = {
             line: 34,
             paramTypes: [],
             kind: "method",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "E", method: "m()" },
@@ -80,7 +80,7 @@ const cg: CallGraph = {
             line: 24,
             paramTypes: [],
             kind: "method",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "A", method: "m()" },
@@ -88,7 +88,7 @@ const cg: CallGraph = {
             line: 46,
             paramTypes: [],
             kind: "method",
-            visibility: "public",
+            visibility: "public"
         },
         {
             id: { package: "", class: "B", method: "m()" },
@@ -96,67 +96,67 @@ const cg: CallGraph = {
             line: 40,
             paramTypes: [],
             kind: "method",
-            visibility: "public",
-        },
+            visibility: "public"
+        }
     ],
     edges: [
         {
             source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "H", method: "H()" },
+            target: { package: "", class: "H", method: "H()" }
         },
         {
             source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "C", method: "m()" },
+            target: { package: "", class: "C", method: "m()" }
         },
         {
             source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "E", method: "m()" },
+            target: { package: "", class: "E", method: "m()" }
         },
         {
             source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "C", method: "C()" },
+            target: { package: "", class: "C", method: "C()" }
         },
         {
             source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "A", method: "m()" },
+            target: { package: "", class: "A", method: "m()" }
         },
         {
             source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "B", method: "m()" },
+            target: { package: "", class: "B", method: "m()" }
         },
         {
             source: { package: "", class: "H", method: "H()" },
-            target: { package: "", class: "F", method: "F()" },
+            target: { package: "", class: "F", method: "F()" }
         },
         {
             source: { package: "", class: "F", method: "F()" },
-            target: { package: "", class: "C", method: "C()" },
+            target: { package: "", class: "C", method: "C()" }
         },
         {
             source: { package: "", class: "C", method: "C()" },
-            target: { package: "", class: "A", method: "A()" },
+            target: { package: "", class: "A", method: "A()" }
         },
         {
             source: { package: "", class: "C", method: "C()" },
-            target: { package: "", class: "C", method: "clinit<>" },
+            target: { package: "", class: "C", method: "clinit<>" }
         },
         {
             source: { package: "", class: "A", method: "A()" },
             target: {
                 package: "java.lang",
                 class: "Object",
-                method: "<init>()",
-            },
+                method: "<init>()"
+            }
         },
         {
             source: { package: "", class: "C", method: "clinit<>" },
-            target: { package: "", class: "G", method: "G()" },
+            target: { package: "", class: "G", method: "G()" }
         },
         {
             source: { package: "", class: "G", method: "G()" },
-            target: { package: "", class: "F", method: "F()" },
-        },
-    ],
+            target: { package: "", class: "F", method: "F()" }
+        }
+    ]
 };
 
 export function fetchCallGraph(): CallGraph {

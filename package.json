@@ -17,7 +17,13 @@
         "command": "cat-viz.openCallGraph",
         "title": "Open Call Graph"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [{
+        "id": "callGraphDependencies",
+        "name": "Call Graph Dependencies"
+      }]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

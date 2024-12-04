@@ -1,10 +1,19 @@
 import cytoscape, { NodeSingular } from "cytoscape";
 import { useContext, useEffect, useRef, useState } from "react";
-import { NodeTooltip, type NodeTooltipProps } from "./node-tooltip";
 import { RootContext } from "@/lib/state/context";
 import { HighlightAlert } from "./highlight-alert";
 import { CytoscapeOptions } from "@/lib/cytoscape-options";
 import { getCompleteID } from "@/lib/utils";
+import { NodePopover, NodePopoverData } from "./node-popover";
+
+const visibilitySymbols: {
+    [key in "public" | "private" | "protected" | "static"]: string;
+} = {
+    public: "+",
+    private: "-",
+    protected: "#",
+    static: "$"
+};
 
 export function CallGraph() {
     const root = useContext(RootContext);
@@ -13,30 +22,28 @@ export function CallGraph() {
     const container = useRef(null);
     const [cy, initCytoscape] = useState<cytoscape.Core>(cytoscape({}));
 
-    const [tooltip, setTooltip] = useState<NodeTooltipProps>({
-        show: false,
-        x: 0,
-        y: 0,
-        data: {}
+    // i hate react
+    const [popoverOpen, showPopover] = useState<boolean>(false);
+    const [popoverData, setPopoverData] = useState<NodePopoverData>({
+        coords: { x: 0, y: 0 },
+        node: {}
     });
 
-    // Events for tooltips and highlighting
-    const nodeMouseMove = (e: cytoscape.EventObject) => {
-        setTooltip({
-            show: true,
-            x: e.originalEvent.clientX,
-            y: e.originalEvent.clientY,
-            data: e.target.data()
-        });
-    };
+    cy.on("tap", "node", (e) => {
+        const node = e.target as cytoscape.NodeSingular;
 
-    const nodeMouseOut = () => {
-        setTooltip({ show: false, x: 0, y: 0, data: {} });
-    };
+        if (!node.hasClass("parent-node")) {
+            setPopoverData({
+                coords: {
+                    x: e.originalEvent.clientX,
+                    y: e.originalEvent.clientY
+                },
+                node: node.data()
+            });
 
-    cy.on("click", "node", (e) =>
-        root.update({ ...root, highlightedNode: e.target.id() })
-    );
+            showPopover(true);
+        }
+    });
 
     // Re-render entire graph
     // Graph will render when either the depth, layout or the graph itself changes
@@ -46,46 +53,73 @@ export function CallGraph() {
             ...CytoscapeOptions
         });
 
-        // Add event handlers for tooltips
-        cy.on("mousemove", "node", nodeMouseMove);
-        cy.on("mouseout", "node", nodeMouseOut);
+        // Add parent nodes (if applicable)
+        const parents = new Set<string>();
+        switch (root.depth) {
+            case "method":
+                root.graph.nodes.forEach((node) =>
+                    parents.add(getCompleteID(node.id, "class"))
+                );
+                break;
+            case "class":
+                root.graph.nodes.forEach((node) =>
+                    parents.add(getCompleteID(node.id, "package"))
+                );
+                break;
+        }
+        parents.forEach((node) =>
+            cy.add({
+                data: { id: `parent(${node})`, label: node },
+                classes: ["parent-node"]
+            })
+        );
 
         // Add nodes
-        const nodes: string[] = [];
+        const nodes = new Set<string>();
         for (const node of root.graph.nodes) {
             // Skip if node already exists
             const id = getCompleteID(node.id, root.depth);
-            if (nodes.includes(id)) continue;
+            if (nodes.has(id)) continue;
 
             let next: cytoscape.ElementDefinition;
             switch (root.depth) {
                 case "package":
-                    next = { data: { id } };
+                    next = { data: { id, label: id }, classes: ["node"] };
                     break;
                 case "class":
-                    next = { data: { id, path: node.path } };
+                    next = {
+                        data: {
+                            id,
+                            label: id,
+                            parent: `parent(${getCompleteID(node.id, "package")})`,
+                            path: node.path
+                        },
+                        classes: ["node"]
+                    };
                     break;
                 case "method":
                     next = {
                         data: {
                             id,
+                            label: `${visibilitySymbols[node.visibility]}${id}`,
+                            parent: `parent(${getCompleteID(node.id, "class")})`,
                             path: node.path,
                             line: node.line,
                             paramTypes: node.paramTypes,
                             kind: node.kind,
                             visibility: node.visibility
                         },
-                        classes: [node.kind, node.visibility]
+                        classes: ["node", node.kind, node.visibility]
                     };
                     break;
             }
 
             cy.add(next);
-            nodes.push(id);
+            nodes.add(id);
         }
 
         // Add edges
-        const edges: string[] = [];
+        const edges = new Set<string>();
         for (const edge of root.graph.edges) {
             // Skip if edge already exists
             const source = getCompleteID(edge.source, root.depth);
@@ -93,60 +127,70 @@ export function CallGraph() {
             const id = `${source}->${target}`;
 
             // Skip self-referential nodes (whenever depth !== "method")
-            //if (source === target && root.depth !== "method") continue;
-            if (edges.includes(id)) continue;
+            if (source === target && root.depth !== "method") continue;
+            if (edges.has(id)) continue;
 
             cy.add({ data: { id, source, target } });
-            edges.push(id);
+            edges.add(id);
         }
 
-        cy.layout({ name: root.layout, spacingFactor: 0.25, animate: false }).run();
+        cy.layout({
+            name: root.layout,
+            spacingFactor: 0.25,
+            animate: false
+        }).run();
         initCytoscape(cy);
     }, [root.graph, root.depth, root.layout]);
 
     // Update highlighting
     useEffect(() => {
         // Reset colors
-        cy.$(".start-node").forEach((node) => {
-            node.removeClass("start-node");
-        });
-        cy.$(".highlighted").forEach((node) => {
-            node.removeClass("highlighted");
-        });
-        cy.$(".unhighlighted").forEach((node) => {
-            node.removeClass("unhighlighted");
-        });
+        const resetAll = (c: string) =>
+            cy.nodes("." + c).forEach((n) => n.removeClass(c) && true);
+
+        resetAll("start-node");
+        resetAll("highlighted");
+        resetAll("unhighlighted");
 
         if (root.highlightedNode !== "") {
             const startNode = cy.nodes(`[id="${root.highlightedNode}"]`)[0];
             if (!startNode) return;
 
-            // Unhighlight all nodes first
-            cy.nodes().forEach((node) => {
-                node.addClass("unhighlighted");
-            });
+            const isParent = startNode.hasClass("parent-node");
 
-            const visited: NodeSingular[] = [startNode];
-
-            const visit = (node: NodeSingular) => {
-                node.removeClass("unhighlighted");
-                node.addClass("highlighted");
-                visited.push(node);
-
-                // Get edges and visit them
-                node.connectedEdges().forEach((edge) => {
-                    const candidate = edge.target();
-                    if (!visited.includes(candidate)) {
-                        visit(candidate);
-                    }
+            // If the start node is a normal node, we perform a recursive reachability search
+            // before we pan the viewport over to the start node.
+            // If the start node is a parent node, we just pan the viewport.
+            if (!isParent) {
+                // Unhighlight all nodes first
+                cy.nodes(".node").forEach((node) => {
+                    node.addClass("unhighlighted");
                 });
-            };
 
-            visit(startNode);
-            startNode.addClass("start-node");
+                const visited = new Set<NodeSingular>();
 
-            // TODO: Add setting for this
-            if (root.panViewport) {
+                const visit = (node: NodeSingular) => {
+                    visited.add(node);
+
+                    // Highlight node
+                    node.removeClass("unhighlighted");
+                    node.addClass("highlighted");
+
+                    // Get edges and visit them
+                    node.connectedEdges().forEach((edge) => {
+                        const candidate = edge.target();
+                        if (!visited.has(candidate)) {
+                            visit(candidate);
+                        }
+                    });
+                };
+
+                visit(startNode);
+                startNode.addClass("start-node");
+            }
+
+            // Pan viewport to the start node
+            if (root.panViewport || isParent) {
                 cy.animate({
                     center: { eles: startNode },
                     duration: 250,
@@ -159,8 +203,12 @@ export function CallGraph() {
     return (
         <>
             <div className="w-dvw h-dvh" id="id" ref={container}></div>
-            <NodeTooltip {...tooltip} />
             <HighlightAlert />
+            <NodePopover
+                open={popoverOpen}
+                onClose={() => showPopover(false)}
+                data={popoverData}
+            />
         </>
     );
 }
