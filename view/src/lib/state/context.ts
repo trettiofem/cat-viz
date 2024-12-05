@@ -13,8 +13,8 @@ export interface Node {
     id: Identifier;
     path: string;
     line: number;
-    paramTypes: string[];
-    kind: "entry-point" | "constructor" | "method" | "static-initializer"; // TODO: any more?
+    params: { [key in string]: string };
+    kind: "entry-point" | "constructor" | "method" | "static-initializer" | "instance-initializer";
     visibility: "public" | "private" | "protected" | "static";
 }
 

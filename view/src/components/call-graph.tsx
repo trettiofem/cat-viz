@@ -105,7 +105,7 @@ export function CallGraph() {
                             parent: `parent(${getCompleteID(node.id, "class")})`,
                             path: node.path,
                             line: node.line,
-                            paramTypes: node.paramTypes,
+                            params: node.params,
                             kind: node.kind,
                             visibility: node.visibility
                         },

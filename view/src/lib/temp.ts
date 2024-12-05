@@ -3,158 +3,262 @@ import { CallGraph } from "./state/context";
 const cg: CallGraph = {
     nodes: [
         {
-            id: { package: "", class: "Example", method: "main()" },
-            path: "examples/Example.java",
-            line: 4,
-            paramTypes: [],
+            id: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            path: "example/Shelter.java",
+            line: 2,
+            params: {
+                args: "String[]"
+            },
             kind: "entry-point",
-            visibility: "public"
-        },
-        {
-            id: { package: "", class: "H", method: "H()" },
-            path: "examples/Example.java",
-            line: 0,
-            paramTypes: [],
-            kind: "constructor",
-            visibility: "public"
-        },
-        {
-            id: { package: "", class: "F", method: "F()" },
-            path: "examples/Example.java",
-            line: 0,
-            paramTypes: [],
-            kind: "constructor",
-            visibility: "public"
-        },
-        {
-            id: { package: "", class: "C", method: "C()" },
-            path: "examples/Example.java",
-            line: 0,
-            paramTypes: [],
-            kind: "constructor",
-            visibility: "public"
-        },
-        {
-            id: { package: "", class: "A", method: "A()" },
-            path: "examples/Example.java",
-            line: 0,
-            paramTypes: [],
-            kind: "constructor",
-            visibility: "public"
-        },
-        {
-            id: { package: "java.lang", class: "Object", method: "<init>()" },
-            path: "jrt:/java.base/java/lang/Object.class",
-            line: 0,
-            paramTypes: [],
-            kind: "constructor",
-            visibility: "public"
-        },
-        {
-            id: { package: "", class: "C", method: "clinit<>" },
-            path: "examples/Example.java",
-            line: 33,
-            paramTypes: [],
-            kind: "static-initializer",
             visibility: "static"
         },
         {
-            id: { package: "", class: "G", method: "G()" },
-            path: "examples/Example.java",
+            id: {
+                package: "",
+                class: "Fish",
+                method: "Fish"
+            },
+            path: "example/Fish.java",
             line: 0,
-            paramTypes: [],
+            params: {},
             kind: "constructor",
             visibility: "public"
         },
         {
-            id: { package: "", class: "C", method: "m()" },
-            path: "examples/Example.java",
-            line: 34,
-            paramTypes: [],
+            id: {
+                package: "",
+                class: "Animal",
+                method: "Animal"
+            },
+            path: "example/Animal.java",
+            line: 0,
+            params: {},
+            kind: "constructor",
+            visibility: "public"
+        },
+        {
+            id: {
+                package: "java.lang",
+                class: "Object",
+                method: "<init>"
+            },
+            path: "jrt:/java.base/java/lang/Object.class",
+            line: 0,
+            params: {},
+            kind: "constructor",
+            visibility: "public"
+        },
+        {
+            id: {
+                package: "",
+                class: "Dog",
+                method: "Dog"
+            },
+            path: "example/Dog.java",
+            line: 0,
+            params: {},
+            kind: "constructor",
+            visibility: "public"
+        },
+        {
+            id: {
+                package: "java.io",
+                class: "PrintStream",
+                method: "println"
+            },
+            path: "jrt:/java.base/java/io/PrintStream.class",
+            line: 0,
+            params: {
+                p0: "String"
+            },
             kind: "method",
             visibility: "public"
         },
         {
-            id: { package: "", class: "E", method: "m()" },
-            path: "examples/Example.java",
-            line: 24,
-            paramTypes: [],
+            id: {
+                package: "",
+                class: "Animal",
+                method: "noise"
+            },
+            path: "example/Animal.java",
+            line: 2,
+            params: {},
+            kind: "method",
+            visibility: "protected"
+        },
+        {
+            id: {
+                package: "",
+                class: "Fish",
+                method: "noise"
+            },
+            path: "example/Fish.java",
+            line: 2,
+            params: {},
             kind: "method",
             visibility: "public"
         },
         {
-            id: { package: "", class: "A", method: "m()" },
-            path: "examples/Example.java",
-            line: 46,
-            paramTypes: [],
+            id: {
+                package: "",
+                class: "Dog",
+                method: "noise"
+            },
+            path: "example/Dog.java",
+            line: 2,
+            params: {},
             kind: "method",
             visibility: "public"
         },
         {
-            id: { package: "", class: "B", method: "m()" },
-            path: "examples/Example.java",
-            line: 40,
-            paramTypes: [],
+            id: {
+                package: "",
+                class: "Animal",
+                method: "hello"
+            },
+            path: "example/Animal.java",
+            line: 6,
+            params: {},
             kind: "method",
             visibility: "public"
         }
     ],
     edges: [
         {
-            source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "H", method: "H()" }
-        },
-        {
-            source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "C", method: "m()" }
-        },
-        {
-            source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "E", method: "m()" }
-        },
-        {
-            source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "C", method: "C()" }
-        },
-        {
-            source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "A", method: "m()" }
-        },
-        {
-            source: { package: "", class: "Example", method: "main()" },
-            target: { package: "", class: "B", method: "m()" }
-        },
-        {
-            source: { package: "", class: "H", method: "H()" },
-            target: { package: "", class: "F", method: "F()" }
-        },
-        {
-            source: { package: "", class: "F", method: "F()" },
-            target: { package: "", class: "C", method: "C()" }
-        },
-        {
-            source: { package: "", class: "C", method: "C()" },
-            target: { package: "", class: "A", method: "A()" }
-        },
-        {
-            source: { package: "", class: "C", method: "C()" },
-            target: { package: "", class: "C", method: "clinit<>" }
-        },
-        {
-            source: { package: "", class: "A", method: "A()" },
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
             target: {
-                package: "java.lang",
-                class: "Object",
-                method: "<init>()"
+                package: "",
+                class: "Fish",
+                method: "Fish"
             }
         },
         {
-            source: { package: "", class: "C", method: "clinit<>" },
-            target: { package: "", class: "G", method: "G()" }
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            target: {
+                package: "",
+                class: "Dog",
+                method: "Dog"
+            }
         },
         {
-            source: { package: "", class: "G", method: "G()" },
-            target: { package: "", class: "F", method: "F()" }
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            target: {
+                package: "java.io",
+                class: "PrintStream",
+                method: "println"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            target: {
+                package: "",
+                class: "Animal",
+                method: "noise"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            target: {
+                package: "",
+                class: "Fish",
+                method: "noise"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            target: {
+                package: "",
+                class: "Dog",
+                method: "noise"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Shelter",
+                method: "main"
+            },
+            target: {
+                package: "",
+                class: "Animal",
+                method: "hello"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Fish",
+                method: "Fish"
+            },
+            target: {
+                package: "",
+                class: "Animal",
+                method: "Animal"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Animal",
+                method: "Animal"
+            },
+            target: {
+                package: "java.lang",
+                class: "Object",
+                method: "<init>"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Dog",
+                method: "Dog"
+            },
+            target: {
+                package: "",
+                class: "Animal",
+                method: "Animal"
+            }
+        },
+        {
+            source: {
+                package: "",
+                class: "Animal",
+                method: "hello"
+            },
+            target: {
+                package: "java.io",
+                class: "PrintStream",
+                method: "println"
+            }
         }
     ]
 };

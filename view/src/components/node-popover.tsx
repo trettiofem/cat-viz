@@ -46,7 +46,7 @@ export function NodePopover({ open, onClose, data }: NodePopoverProps) {
         });
 
         onClose();
-    };
+    };    
 
     return (
         <Popover open={open} onOpenChange={onClose} modal>
@@ -71,7 +71,7 @@ export function NodePopover({ open, onClose, data }: NodePopoverProps) {
                                 {labels[key] ? labels[key] : key}:{" "}
                                 <span className="font-mono">
                                     {data.node[key].toString() !== ""
-                                        ? data.node[key]
+                                        ? data.node[key].toString()
                                         : "(empty)"}
                                 </span>
                             </p>
