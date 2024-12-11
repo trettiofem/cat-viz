@@ -19,7 +19,7 @@ export function getCompleteID(id: Identifier, depth: Depth): string {
             break;
         case "method":
             completeID = id.package === "" ? "" : id.package + ".";
-            completeID += `${id.class}::${id.method}()`;
+            completeID += `${id.class}::${id.method}`;
             break;
     }
 
