@@ -1,47 +1,91 @@
 {
-  "name": "cat-viz",
-  "displayName": "cat-viz",
-  "description": "Tool for call graph visualization",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.95.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "cat-viz.openCallGraph",
-        "title": "Open Call Graph"
-      }
+    "name": "cat-viz",
+    "displayName": "cat-viz",
+    "description": "Tool for call graph visualization",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.95.0"
+    },
+    "categories": [
+        "Other"
     ],
-    "views": {
-      "explorer": [{
-        "id": "callGraphDependencies",
-        "name": "Call Graph Dependencies"
-      }]
+    "activationEvents": [
+        "onFileSystem:file"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "cat-viz.open",
+                "title": "Open Call Graph"
+            },
+            {
+                "command": "cat-viz.addFile",
+                "title": "Add Call Graph Dependency",
+                "icon": "$(add)"
+            },
+            {
+                "command": "cat-viz.addClasspath",
+                "title": "Add to Call Graph Classpath",
+                "icon": "$(add)"
+            },
+            {
+                "command": "cat-viz.remove",
+                "title": "Remove Call Graph Dependency",
+                "icon": "$(x)"
+            }
+        ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "cat-viz.dependencies",
+                    "name": "Call Graph Dependencies"
+                }
+            ]
+        },
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "cat-viz.remove",
+                    "when": "view == cat-viz.dependencies",
+                    "group": "inline"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "cat-viz.addFile",
+                    "when": "resourceExtname == .java"
+                },
+                {
+                    "command": "cat-viz.addClasspath",
+                    "when": "explorerResourceIsFolder || resourceExtname == .jar"
+                }
+            ]
+        },
+        "viewsWelcome": [
+            {
+                "view": "cat-viz.dependencies",
+                "contents": "No call graph dependencies. Add files by right-clicking on them and selecting \"Add Call Graph Dependency\"."
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.9",
+        "@types/node": "20.x",
+        "@types/vscode": "^1.95.0",
+        "@typescript-eslint/eslint-plugin": "^8.10.0",
+        "@typescript-eslint/parser": "^8.7.0",
+        "@vscode/test-cli": "^0.0.10",
+        "@vscode/test-electron": "^2.4.1",
+        "eslint": "^9.13.0",
+        "typescript": "^5.6.3"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.95.0",
-    "@types/mocha": "^10.0.9",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.10.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "eslint": "^9.13.0",
-    "typescript": "^5.6.3",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
-  }
 }
