@@ -1,7 +1,7 @@
 # cat-viz
-![Logo](res/logo.png)
+![Banner](res/banner.png)
 
-cat-viz is an extension for Visual Studio Code that displays call graphs. It uses [cat-server](https://github.com/trettiofem/cat-server) as its back-end, which in turn is based on [CAT](https://github.com/IdrissRio/cat/), a call graph analysis tool created by [Idriss Riouak](https://github.com/IdrissRio). CAT and by extension, cat-server is built on top of the [ExtendJ](https://extendj.org/) Java compiler.
+`cat-viz` is an extension for Visual Studio Code that displays call graphs. It uses [cat-server](https://github.com/trettiofem/cat-server) as its backend, which in turn is based on [CAT](https://github.com/IdrissRio/cat/), a call graph analysis tool created by [Idriss Riouak](https://github.com/IdrissRio). CAT and by extension, cat-server is built on top of the [ExtendJ](https://extendj.org/) Java compiler.
 
 ## Table of Contents
 
@@ -13,11 +13,33 @@ cat-viz is an extension for Visual Studio Code that displays call graphs. It use
 
 ## Features
 
-todo!
+### Follow the flow of execution
+
+`cat-viz` highlights the flow of execution, allowing the user to get a good grasp of how the analyzed program is structured.
+
+![Dependencies](res/highlight.png)
+
+### Zoom in and out
+
+`cat-viz` allows the user to "zoom" in and out of the graph, which shows the relationships, not only between methods, but also between classes and packages.
+
+![Dependencies](res/method.png)
+
+### Selective analysis
+
+`cat-viz` allows for fine-tuning of its call graph analysis. Analyzing every file in a large project can take a long time to compute, and can result in a very large and unwieldy graph.
+
+![Dependencies](res/deps.png)
+
+### Search
+
+`cat-viz` has a built-in search function, allowing the user to search for methods, classes and packages.
+
+![Dependencies](res/search.png)
 
 ## Installation
 
-```
+```sh
 # Clone the repo
 gh repo clone trettiofem/cat-viz
 cd cat-viz
@@ -32,8 +54,8 @@ cd ..
 
 ## Usage
 
-```
-# Follow the steps below if you're interested in the web view component.
+```sh
+# Follow the steps below if you are interested in the web view component.
 # Navigate into the web view component
 cd view
 
@@ -46,19 +68,19 @@ npx vite build
 # Run build server
 npx vite build --watch
 
-# Follow the steps below if you're interested in the vscode extension.
+# Follow the steps below if you are interested in the vscode extension.
 # Open project in vscode
 code .
 
-# Press F5 to debug extension
+# Press F5 to debug the extension
 
 # Build extension
-TODO!
+# vet ej?
 ```
 
 ## Contributing
 
-We welcome contributions to cat-viz! If you'd like to contribute, please follow these steps:
+We welcome contributions to cat-viz! If you would like to contribute, please follow these steps:
 
 1. Fork the repository.
 2. Create a new branch for your feature/fix: git checkout -b feature/your-feature.
@@ -67,4 +89,4 @@ We welcome contributions to cat-viz! If you'd like to contribute, please follow 
 
 ## License
 
-vet ej?
+CAT is released under the BSD 3-Clause License.
