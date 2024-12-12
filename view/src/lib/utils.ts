@@ -62,6 +62,8 @@ class VSCodeAPIWrapper {
         }
     }
 
+    // TODO: clean up this file
+
     /**
      * Get the persistent state stored for this webview.
      *

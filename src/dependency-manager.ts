@@ -2,14 +2,18 @@ import { window } from "vscode";
 import { Dependency, Request } from "./types";
 
 export class DependencyManager {
-    private entryPackage: string = "Example";
-    private entryMethod: string = "main";
+    private entryPackage: string = "";
+    private entryMethod: string = "";
 
     private deps: Dependency[] = [];
 
-    setEntry(_package: string, method: string): void {
-        this.entryPackage = _package;
-        this.entryMethod = method;
+    setEntry(entryPackage: string, entryMethod: string): void {
+        this.entryPackage = entryPackage;
+        this.entryMethod = entryMethod;
+    }
+
+    noEntry(): boolean {
+        return this.entryPackage === "" && this.entryMethod === "";
     }
 
     add(path: string, classpath: boolean): void {

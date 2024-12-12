@@ -1,84 +1,70 @@
 # cat-viz
+![Logo](res/logo.png)
 
-This is the README for your extension "cat-viz". After writing up a brief description, we recommend including the following sections.
+cat-viz is an extension for Visual Studio Code that displays call graphs. It uses [cat-server](https://github.com/trettiofem/cat-server) as its back-end, which in turn is based on [CAT](https://github.com/IdrissRio/cat/), a call graph analysis tool created by [Idriss Riouak](https://github.com/IdrissRio). CAT and by extension, cat-server is built on top of the [ExtendJ](https://extendj.org/) Java compiler.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+todo!
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Run
+## Installation
 
 ```
-# Navigate into web view
-cd view
+# Clone the repo
+gh repo clone trettiofem/cat-viz
+cd cat-viz
 
 # Install dependencies
 npm install
+cd view
+npm install
+cd ..
+
+```
+
+## Usage
+
+```
+# Follow the steps below if you're interested in the web view component.
+# Navigate into the web view component
+cd view
+
+# Start local development server
+npx vite
+
+# Build web view
+npx vite build
 
 # Run build server
 npx vite build --watch
+
+# Follow the steps below if you're interested in the vscode extension.
+# Open project in vscode
+code .
+
+# Press F5 to debug extension
+
+# Build extension
+TODO!
 ```
 
-## Extension Settings
+## Contributing
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+We welcome contributions to cat-viz! If you'd like to contribute, please follow these steps:
 
-For example:
+1. Fork the repository.
+2. Create a new branch for your feature/fix: git checkout -b feature/your-feature.
+3. Commit your changes and push to your forked repository.
+4. Create a pull request detailing your changes.
 
-> This extension contributes the following settings:
+## License
 
-- `myExtension.enable`: Enable/disable this extension.
-- `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-- [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-- Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-- Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+vet ej?

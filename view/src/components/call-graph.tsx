@@ -1,6 +1,6 @@
 import cytoscape, { NodeSingular } from "cytoscape";
 import { useContext, useEffect, useRef, useState } from "react";
-import { RootContext } from "@/lib/state/context";
+import { CallGraph, RootContext } from "@/lib/state/context";
 import { HighlightAlert } from "./highlight-alert";
 import { CytoscapeOptions } from "@/lib/cytoscape-options";
 import { getCompleteID } from "@/lib/utils";
@@ -15,7 +15,9 @@ const visibilitySymbols: {
     static: "$"
 };
 
-export function CallGraph() {
+// TODO: rename file
+// TODO: when updating graph, unhighlight nodes that don't exist anymore!
+export function CallGraphContainer() {
     const root = useContext(RootContext);
     if (!root) throw new Error("Root context not initialized.");
 
@@ -144,7 +146,7 @@ export function CallGraph() {
 
         cy.layout({
             name: root.layout,
-            spacingFactor: 0.25,
+            spacingFactor: 0.5,
             animate: false
         }).run();
         initCytoscape(cy);
@@ -208,6 +210,25 @@ export function CallGraph() {
         }
     }, [cy, root.highlightedNode, root.panViewport]);
 
+    const updateCallGraph = (msg: MessageEvent) => {
+        const data = msg.data;
+
+        if (data.type === "set-graph") {
+            root.update({
+                ...root,
+                graph: data.graph as CallGraph,
+                files: data.files,
+                classpath: data.classpath
+            });
+        }
+    };
+
+    // Get data from vscode
+    useEffect(() => {
+        window.addEventListener("message", updateCallGraph);
+        return () => window.removeEventListener("message", updateCallGraph);
+    });
+    
     return (
         <>
             <div className="w-dvw h-dvh" id="id" ref={container}></div>
@@ -217,6 +238,15 @@ export function CallGraph() {
                 onClose={() => showPopover(false)}
                 data={popoverData}
             />
+
+            {root.graph.nodes.length === 0 ? (
+                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 items-center opacity-25 pointer-events-none">
+                    <p className="text-4xl">{"¯\\_(ツ)_/¯"}</p>
+                    <p className="text-2xl">No graph.</p>
+                </div>
+            ) : (
+                <></>
+            )}
         </>
     );
 }

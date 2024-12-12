@@ -17,7 +17,7 @@ export class CallGraphPanel {
     /**
      * The CallGraphPanel class private constructor (called only from the render method).
      */
-    private constructor(panel: WebviewPanel, extensionUri: Uri) {
+    private constructor(panel: WebviewPanel, extensionUri: Uri, private onMessage: (msg: any) => void) {
         this.panel = panel;
 
         this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
@@ -37,7 +37,7 @@ export class CallGraphPanel {
      * Renders the current webview panel if it exists otherwise a new webview panel
      * will be created and displayed.
      */
-    public static render(extensionUri: Uri) {
+    public static render(extensionUri: Uri, onMessage: (msg: any) => void) {
         if (CallGraphPanel.currentPanel) {
             // If the webview panel already exists reveal it
             CallGraphPanel.currentPanel.panel.reveal(ViewColumn.Beside);
@@ -58,7 +58,8 @@ export class CallGraphPanel {
 
             CallGraphPanel.currentPanel = new CallGraphPanel(
                 panel,
-                extensionUri
+                extensionUri,
+                onMessage
             );
         }
     }
@@ -121,20 +122,7 @@ export class CallGraphPanel {
      * executes code based on the message that is recieved.
      */
     private setWebviewMessageListener(webview: Webview) {
-        webview.onDidReceiveMessage(
-            (message: any) => {
-                const command = message.command;
-                const text = message.text;
-
-                switch (command) {
-                    case "hello":
-                        // Code that should run in response to the hello message command
-                        window.showInformationMessage(text);
-                        return;
-                    // Add more switch case statements here as more webview message commands
-                    // are created within the webview context (i.e. inside media/main.js)
-                }
-            },
+        webview.onDidReceiveMessage(this.onMessage,
             undefined,
             this.disposables
         );

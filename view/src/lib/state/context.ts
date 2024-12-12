@@ -14,7 +14,12 @@ export interface Node {
     path: string;
     line: number;
     params: { [key in string]: string };
-    kind: "entry-point" | "constructor" | "method" | "static-initializer" | "instance-initializer";
+    kind:
+        | "entry-point"
+        | "constructor"
+        | "method"
+        | "static-initializer"
+        | "instance-initializer";
     visibility: "public" | "private" | "protected" | "static";
 }
 
@@ -30,10 +35,17 @@ export interface CallGraph {
 
 export interface RootState {
     graph: CallGraph;
+
+    entryPackage: string;
+    entryMethod: string;
+    files: string[];
+    classpath: string[];
+
     layout: Layout;
     highlightedNode: string;
     panViewport: boolean;
     depth: Depth;
+    
     update: (next: RootState) => void;
 }
 

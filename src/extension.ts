@@ -2,65 +2,111 @@ import { commands, ExtensionContext, window, workspace } from "vscode";
 import { CallGraphPanel } from "./panel";
 import { DependencyProvider } from "./dependency-provider";
 import { DependencyManager } from "./dependency-manager";
-import { normalizePath } from "./util";
-import { CallGraph, Request } from "./types";
+import { CallGraph } from "./types";
 
 const HOST = "localhost";
-const PORT = 8080;
+const PORT = 8080; // TODO: prompt for port if server can't be found
 
-async function fetchGraph(req: Request): Promise<CallGraph> {
-    const res = await fetch(`http://${HOST}:${PORT}/callgraph`, {
-        method: "POST",
-        body: JSON.stringify(req)
+async function api(path: string, body?: any): Promise<any> {
+    const _res = await fetch(`http://${HOST}:${PORT}${path}`, {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: body ? JSON.stringify(body) : ""
     });
-    const data = (await res.json()) as CallGraph; // TODO: change to Response type
-    return data;
+    const res = (await _res.json()) as any;
+
+    if (!res.status) {
+        throw new Error("Internal server error.");
+    }
+
+    if (res.status !== "ok") {
+        throw new Error(res.message);
+    }
+
+    return res.data;
 }
 
 export function activate(context: ExtensionContext) {
     const depman = new DependencyManager(); // TODO: rename
     const deppro = new DependencyProvider();
 
-    let lastGraph: CallGraph = { edges: [], nodes: [] };
+    const refreshGraph = async () => {
+        if (depman.noEntry()) {
+            return;
+        }
+
+        try {
+            const graph = (await api(
+                "/callgraph",
+                depman.getRequest()
+            )) as CallGraph;
+
+            CallGraphPanel.currentPanel?.sendMessage({
+                type: "set-graph",
+                graph,
+                files: depman.getList(),
+                classpath: [] // TODO: remove classpath, and rename files to list or smth
+            });
+        } catch (e) {
+            window.showErrorMessage(
+                `Call Graph Error: ${(e as Error).message}`
+            );
+        }
+    };
+
+    const onMessage = (msg: any) => {
+        switch (msg.type) {
+            case "set-entry":
+                depman.setEntry(msg.entryPackage, msg.entryMethod);
+                refreshGraph();
+                return;
+        }
+    };
 
     context.subscriptions.push(
         commands.registerCommand("cat-viz.open", async () => {
-            const res = await fetch(`http://${HOST}:${PORT}/status`);
-            const data = (await res.json()) as { status: string };
+            try {
+                // Check server status
+                const res = (await api("/status")) as number;
 
-            if (data.status && data.status === "ok") {
-                // Server works!
-                if (lastGraph.nodes.length === 0) {
-                    lastGraph = await fetchGraph(depman.getRequest());
+                if (res === 0) {
+                    // Server works!
+                    CallGraphPanel.render(context.extensionUri, onMessage);
                 }
-
-                console.log(lastGraph);
-
-                CallGraphPanel.render(context.extensionUri);
+            } catch (e) {
+                window.showErrorMessage(
+                    `Call Graph Error: ${(e as Error).message}`
+                );
             }
         }),
         commands.registerCommand("cat-viz.addFile", (args) => {
-            const path = normalizePath(args.path as string);
+            const path = args.path as string;
             depman.add(path, false);
+
             deppro.refresh(depman.getList());
+            refreshGraph();
         }),
         commands.registerCommand("cat-viz.addClasspath", (args) => {
-            const path = normalizePath(args.path as string);
+            const path = args.path as string;
             depman.add(path, true);
+
             deppro.refresh(depman.getList());
+            refreshGraph();
         }),
         commands.registerCommand("cat-viz.remove", (args) => {
-            const path = normalizePath(args.path as string);
+            const path = args.path as string;
             depman.remove(path);
+
             deppro.refresh(depman.getList());
+            refreshGraph();
         }),
         window.createTreeView("cat-viz.dependencies", {
             treeDataProvider: deppro
         }),
         workspace.onDidSaveTextDocument((document) => {
-            const path = normalizePath(document.fileName);
+            const path = document.fileName;
             if (depman.has(path)) {
-                CallGraphPanel.currentPanel?.sendMessage({ path });
+                refreshGraph();
             }
         })
     );

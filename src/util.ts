@@ -12,14 +12,6 @@ export function getNonce() {
     return text;
 }
 
-// TODO: is needed?
-export function normalizePath(path: string): string {
-    return path;
-    return path.split(/[\/\\]/g)
-        .filter((a) => a !== "")
-        .join("/");
-}
-
 export function getUri(
     webview: Webview,
     extensionUri: Uri,

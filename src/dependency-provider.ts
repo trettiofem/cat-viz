@@ -52,7 +52,7 @@ class DependencyItem extends TreeItem {
         super(path, TreeItemCollapsibleState.None);
 
         this.tooltip = path + (classpath ? " (classpath)" : "");
-        this.description = classpath ? "(classpath)" : "";
+        this.description = classpath ? "classpath" : "";
     }
 }
 
