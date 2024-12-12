@@ -33,6 +33,14 @@ export function CallGraph() {
         const node = e.target as cytoscape.NodeSingular;
 
         if (!node.hasClass("parent-node")) {
+            root.update({ ...root, highlightedNode: node.id() });
+        }
+    });
+
+    cy.on("cxttap", "node", (e) => {
+        const node = e.target as cytoscape.NodeSingular;
+
+        if (!node.hasClass("parent-node")) {
             setPopoverData({
                 coords: {
                     x: e.originalEvent.clientX,
