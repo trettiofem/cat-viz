@@ -1,10 +1,15 @@
 import cytoscape, { NodeSingular } from "cytoscape";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { CallGraph, RootContext } from "@/lib/state/context";
 import { HighlightAlert } from "./highlight-alert";
 import { CytoscapeOptions } from "@/lib/cytoscape-options";
 import { getCompleteID } from "@/lib/utils";
 import { NodePopover, NodePopoverData } from "./node-popover";
+
+export interface CallGraphContainerProps {
+    cy: cytoscape.Core;
+    initCytoscape: Dispatch<SetStateAction<cytoscape.Core>>;
+}
 
 const visibilitySymbols: {
     [key in "public" | "private" | "protected" | "static"]: string;
@@ -17,12 +22,12 @@ const visibilitySymbols: {
 
 // TODO: rename file
 // TODO: when updating graph, unhighlight nodes that don't exist anymore!
-export function CallGraphContainer() {
+export function CallGraphContainer({ cy, initCytoscape }: CallGraphContainerProps) {
     const root = useContext(RootContext);
     if (!root) throw new Error("Root context not initialized.");
 
     const container = useRef(null);
-    const [cy, initCytoscape] = useState<cytoscape.Core>(cytoscape({}));
+    // const [cy, initCytoscape] = useState<cytoscape.Core>(cytoscape({}));
 
     // i hate react
     const [popoverOpen, showPopover] = useState<boolean>(false);
@@ -35,7 +40,11 @@ export function CallGraphContainer() {
         const node = e.target as cytoscape.NodeSingular;
 
         if (!node.hasClass("parent-node")) {
-            root.update({ ...root, highlightedNode: node.id(), panTo: node.id() });
+            root.update({
+                ...root,
+                highlightedNode: node.id(),
+                panTo: node.id()
+            });
         }
     });
 
@@ -96,7 +105,7 @@ export function CallGraphContainer() {
                 case "package":
                     next = { data: { id, label: id }, classes: ["node"] };
                     break;
-                case "class": 
+                case "class":
                     next = {
                         data: {
                             id,
@@ -157,7 +166,7 @@ export function CallGraphContainer() {
             animate: false
         }).run();
         initCytoscape(cy);
-    }, [root.graph, root.depth, root.layout, root.files]);
+    }, [root.graph, root.depth, root.layout, root.files, initCytoscape]);
 
     // Update highlighting
     useEffect(() => {
@@ -221,7 +230,7 @@ export function CallGraphContainer() {
                 easing: "ease-in-out"
             });
         }
-    }, [cy, root.panTo, root.panViewport])
+    }, [cy, root.panTo, root.panViewport]);
 
     const updateCallGraph = (msg: MessageEvent) => {
         const data = msg.data;

@@ -26,10 +26,42 @@ import { useContext } from "react";
 import { RootContext, type Layout } from "@/lib/state/context";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { StatsDialog } from "./stats-dialog";
+import { vscode } from "@/lib/utils";
 
-export function SettingsMenu() {
+export interface SettingsMenuProps {
+    cy: cytoscape.Core;
+}
+
+export function SettingsMenu({ cy }: SettingsMenuProps) {
     const root = useContext(RootContext);
     if (!root) throw new Error("Root context not initialized.");
+
+    const saveImage = async () => {
+        const blob = await cy.png({
+            output: "blob-promise",
+            full: true,
+            scale: 4
+        });
+
+        vscode.postMessage({
+            type: "save-file",
+            filters: {
+                "Image File": ["png"]
+            },
+            bytes: new Uint8Array(await blob.arrayBuffer())
+        });
+    };
+
+    const saveJSON = () => {
+        const bytes = new TextEncoder().encode(JSON.stringify(root.graph, null, "    "));
+        vscode.postMessage({
+            type: "save-file",
+            filters: {
+                "JSON File": ["json"]
+            },
+            bytes
+        });
+    };
 
     return (
         <Dialog>
@@ -109,12 +141,12 @@ export function SettingsMenu() {
 
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={saveImage}>
                                     <FileImage />
                                     <span>Image</span>
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={saveJSON}>
                                     <FileJson />
                                     <span>JSON</span>
                                 </DropdownMenuItem>

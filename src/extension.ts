@@ -1,7 +1,7 @@
 import { commands, ExtensionContext, window, workspace } from "vscode";
-import { ViewPanel } from "./viewpanel";
-import { TreeListProvider } from "./treelist";
-import { StateManager } from "./statemanager";
+import { ViewPanel } from "./view-panel";
+import { TreeListProvider } from "./tree-list";
+import { StateManager } from "./state-manager";
 import { CallGraph } from "./types";
 import { api } from "./api";
 
@@ -20,7 +20,7 @@ async function refreshGraph(state: StateManager) {
     try {
         const currentState = state.getState();
         const graph = (await api("/callgraph", currentState)) as CallGraph;
-        
+
         ViewPanel.currentPanel?.sendMessage({
             type: "set-state",
             graph,
@@ -46,6 +46,13 @@ export function activate(context: ExtensionContext) {
                 treeList.refresh(state.getDependencies());
                 refreshGraph(state);
                 return;
+            case "save-file":
+                const bytes = data.bytes as Uint8Array;
+                window.showSaveDialog({ filters: data.filters }).then((uri) => {
+                    if (uri) {
+                        workspace.fs.writeFile(uri, bytes);
+                    }
+                });
         }
     };
 

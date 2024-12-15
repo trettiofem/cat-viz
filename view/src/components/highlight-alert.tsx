@@ -26,7 +26,7 @@ export function HighlightAlert() {
 
     return (
         <div
-            className={`fixed flex items-center gap-2 top-4 right-4 z-50 overflow-hidden rounded-md border bg-popover p-1.5 pl-3 text-sm text-popover-foreground shadow-md animate-in slide-in-from-top-full fade-in-0 ${showAlert ? "" : "hidden"}`}
+            className={`fixed flex items-center gap-2 bottom-4 right-4 z-50 overflow-hidden rounded-md border bg-popover p-1.5 pl-3 text-sm text-popover-foreground shadow-md animate-in slide-in-from-bottom-full fade-in-0 ${showAlert ? "" : "hidden"}`}
         >
             <p className="">
                 Currently highlighting{" "}
