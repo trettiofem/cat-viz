@@ -8,8 +8,8 @@ import {
 } from "vscode";
 import { getNonce, getUri } from "./util";
 
-export class CallGraphPanel {
-    public static currentPanel: CallGraphPanel | undefined;
+export class ViewPanel {
+    public static currentPanel: ViewPanel | undefined;
 
     private readonly panel: WebviewPanel;
     private disposables: Disposable[] = [];
@@ -38,9 +38,9 @@ export class CallGraphPanel {
      * will be created and displayed.
      */
     public static render(extensionUri: Uri, onMessage: (msg: any) => void) {
-        if (CallGraphPanel.currentPanel) {
+        if (ViewPanel.currentPanel) {
             // If the webview panel already exists reveal it
-            CallGraphPanel.currentPanel.panel.reveal(ViewColumn.Beside);
+            ViewPanel.currentPanel.panel.reveal(ViewColumn.Beside);
         } else {
             // If a webview panel does not already exist create and show a new one
             const panel = window.createWebviewPanel(
@@ -49,6 +49,7 @@ export class CallGraphPanel {
                 ViewColumn.Beside,
                 {
                     enableScripts: true,
+                    retainContextWhenHidden: true,
                     localResourceRoots: [
                         Uri.joinPath(extensionUri, "out"),
                         Uri.joinPath(extensionUri, "view/build")
@@ -56,7 +57,7 @@ export class CallGraphPanel {
                 }
             );
 
-            CallGraphPanel.currentPanel = new CallGraphPanel(
+            ViewPanel.currentPanel = new ViewPanel(
                 panel,
                 extensionUri,
                 onMessage
@@ -68,7 +69,7 @@ export class CallGraphPanel {
      * Cleans up and disposes of webview resources when the webview panel is closed.
      */
     public dispose() {
-        CallGraphPanel.currentPanel = undefined;
+        ViewPanel.currentPanel = undefined;
         this.panel.dispose();
 
         // Dispose of all disposables (i.e. commands) for the current webview panel

@@ -213,13 +213,16 @@ export function CallGraphContainer() {
     const updateCallGraph = (msg: MessageEvent) => {
         const data = msg.data;
 
-        if (data.type === "set-graph") {
-            root.update({
-                ...root,
-                graph: data.graph as CallGraph,
-                files: data.files,
-                classpath: data.classpath
-            });
+        switch (data.type) {
+            case "set-state":
+                return root.update({
+                    ...root,
+                    graph: data.graph as CallGraph,
+                    entryMethod: data.entryMethod,
+                    entryPackage: data.entryPackage,
+                    files: data.files,
+                    classpath: data.classpath
+                });
         }
     };
 

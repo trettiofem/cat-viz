@@ -9,7 +9,7 @@ import {
 } from "vscode";
 import { Dependency } from "./types";
 
-export class DependencyProvider implements TreeDataProvider<DependencyItem> {
+export class TreeListProvider implements TreeDataProvider<DependencyItem> {
     private files: DependencyItem[] = [];
 
     getTreeItem(element: DependencyItem): TreeItem | Thenable<TreeItem> {
@@ -69,5 +69,5 @@ class ClasspathItem extends DependencyItem {
         super(path, true);
     }
 
-    iconPath = new ThemeIcon("file-binary");
+    iconPath = new ThemeIcon("file-directory");
 }

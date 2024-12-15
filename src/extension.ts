@@ -1,64 +1,50 @@
 import { commands, ExtensionContext, window, workspace } from "vscode";
-import { CallGraphPanel } from "./panel";
-import { DependencyProvider } from "./dependency-provider";
-import { DependencyManager } from "./dependency-manager";
+import { ViewPanel } from "./viewpanel";
+import { TreeListProvider } from "./treelist";
+import { StateManager } from "./statemanager";
 import { CallGraph } from "./types";
+import { api } from "./api";
 
-const HOST = "localhost";
-const PORT = 8080; // TODO: prompt for port if server can't be found
+async function refreshGraph(state: StateManager) {
+    if (!state.ready()) {
+        // Send empty graph
+        ViewPanel.currentPanel?.sendMessage({
+            type: "set-state",
+            graph: { nodes: [], edges: [] },
+            ...state.getState()
+        });
 
-async function api(path: string, body?: any): Promise<any> {
-    const _res = await fetch(`http://${HOST}:${PORT}${path}`, {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: body ? JSON.stringify(body) : ""
-    });
-    const res = (await _res.json()) as any;
-
-    if (!res.status) {
-        throw new Error("Internal server error.");
+        return;
     }
 
-    if (res.status !== "ok") {
-        throw new Error(res.message);
-    }
+    try {
+        const currentState = state.getState();
+        const graph = (await api("/callgraph", currentState)) as CallGraph;
 
-    return res.data;
+        ViewPanel.currentPanel?.sendMessage({
+            type: "set-state",
+            graph,
+            ...currentState
+        });
+    } catch (e) {
+        window.showErrorMessage(`Call Graph Error: ${(e as Error).message}`);
+    }
 }
 
 export function activate(context: ExtensionContext) {
-    const depman = new DependencyManager(); // TODO: rename
-    const deppro = new DependencyProvider();
+    const state = new StateManager();
+    const treeList = new TreeListProvider();
 
-    const refreshGraph = async () => {
-        if (depman.noEntry()) {
-            return;
-        }
-
-        try {
-            const graph = (await api(
-                "/callgraph",
-                depman.getRequest()
-            )) as CallGraph;
-
-            CallGraphPanel.currentPanel?.sendMessage({
-                type: "set-graph",
-                graph,
-                files: depman.getList(),
-                classpath: [] // TODO: remove classpath, and rename files to list or smth
-            });
-        } catch (e) {
-            window.showErrorMessage(
-                `Call Graph Error: ${(e as Error).message}`
-            );
-        }
-    };
-
-    const onMessage = (msg: any) => {
-        switch (msg.type) {
+    const onMessage = (data: any) => {
+        switch (data.type) {
             case "set-entry":
-                depman.setEntry(msg.entryPackage, msg.entryMethod);
-                refreshGraph();
+                state.setEntry(data.entryPackage, data.entryMethod);
+                refreshGraph(state);
+                return;
+            case "add-dependency":
+                state.addDependency(data.path, data.classpath);
+                treeList.refresh(state.getDependencies());
+                refreshGraph(state);
                 return;
         }
     };
@@ -71,42 +57,43 @@ export function activate(context: ExtensionContext) {
 
                 if (res === 0) {
                     // Server works!
-                    CallGraphPanel.render(context.extensionUri, onMessage);
+                    ViewPanel.render(context.extensionUri, onMessage);
+                    refreshGraph(state);
+                } else {
+                    window.showErrorMessage("Unknown server error.");
                 }
             } catch (e) {
-                window.showErrorMessage(
-                    `Call Graph Error: ${(e as Error).message}`
-                );
+                window.showErrorMessage((e as Error).message);
             }
         }),
         commands.registerCommand("cat-viz.addFile", (args) => {
             const path = args.path as string;
-            depman.add(path, false);
+            state.addDependency(path, false);
 
-            deppro.refresh(depman.getList());
-            refreshGraph();
+            treeList.refresh(state.getDependencies());
+            refreshGraph(state);
         }),
         commands.registerCommand("cat-viz.addClasspath", (args) => {
             const path = args.path as string;
-            depman.add(path, true);
+            state.addDependency(path, true);
 
-            deppro.refresh(depman.getList());
-            refreshGraph();
+            treeList.refresh(state.getDependencies());
+            refreshGraph(state);
         }),
         commands.registerCommand("cat-viz.remove", (args) => {
             const path = args.path as string;
-            depman.remove(path);
+            state.removeDependency(path);
 
-            deppro.refresh(depman.getList());
-            refreshGraph();
+            treeList.refresh(state.getDependencies());
+            refreshGraph(state);
         }),
         window.createTreeView("cat-viz.dependencies", {
-            treeDataProvider: deppro
+            treeDataProvider: treeList
         }),
         workspace.onDidSaveTextDocument((document) => {
             const path = document.fileName;
-            if (depman.has(path)) {
-                refreshGraph();
+            if (state.hasDependency(path)) {
+                refreshGraph(state);
             }
         })
     );

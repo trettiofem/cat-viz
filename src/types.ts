@@ -1,15 +1,3 @@
-export interface Response {
-    status: string;
-    data: any;
-}
-
-export interface Request {
-    entryPackage: string; // TODO: split into package and class?
-    entryMethod: string;
-    classPath: string[];
-    files: string[];
-}
-
 export interface Dependency {
     path: string;
     classpath: boolean;
