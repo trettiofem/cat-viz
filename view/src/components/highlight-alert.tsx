@@ -16,7 +16,7 @@ export function HighlightAlert() {
         const down: (e: KeyboardEvent) => void = (e) => {
             if (e.key === "Escape") {
                 e.preventDefault();
-                root.update({ ...root, highlightedNode: "" });
+                root.update({ ...root, highlightedNode: "", panTo: "" });
             }
         };
 
@@ -32,7 +32,7 @@ export function HighlightAlert() {
                 Currently highlighting{" "}
                 <InlineCode>{root.highlightedNode}</InlineCode>
             </p>
-            <Button onClick={() => root.update({ ...root, highlightedNode: "" })} size="icon" variant="ghost">
+            <Button onClick={() => root.update({ ...root, highlightedNode: "", panTo: "" })} size="icon" variant="ghost">
                 <X />
             </Button>
         </div>

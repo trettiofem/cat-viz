@@ -10,8 +10,9 @@ export function RootStateProvider({ children }: { children?: ReactNode }) {
         files: [],
         classpath: [],
 
-        layout: "cose",
+        layout: "breadthfirst",
         highlightedNode: "",
+        panTo: "",
         panViewport: true,
         depth: "method",
         

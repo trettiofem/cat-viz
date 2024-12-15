@@ -33,8 +33,8 @@ export function Search() {
         methods: []
     });
 
-    const highlight = (id: string, depth: Depth) => {
-        root.update({ ...root, highlightedNode: id, depth });
+    const pan = (id: string, depth: Depth) => {
+        root.update({ ...root, panTo: id, depth });
         setOpen(false);
     };
 
@@ -88,7 +88,7 @@ export function Search() {
                             <CommandItem
                                 key={_package}
                                 value={_package}
-                                onSelect={(id) => highlight(id, "package")}
+                                onSelect={(id) => pan(id, "package")}
                             >
                                 <PackageOpen />
                                 <InlineCode>{_package}</InlineCode>
@@ -100,7 +100,7 @@ export function Search() {
                             <CommandItem
                                 key={_class}
                                 value={_class}
-                                onSelect={(id) => highlight(id, "class")}
+                                onSelect={(id) => pan(id, "class")}
                             >
                                 <Network />
                                 <InlineCode>{_class}</InlineCode>
@@ -112,7 +112,7 @@ export function Search() {
                             <CommandItem
                                 key={method}
                                 value={method}
-                                onSelect={(id) => highlight(id, "method")}
+                                onSelect={(id) => pan(id, "method")}
                             >
                                 <Box />
                                 <InlineCode>{method}</InlineCode>

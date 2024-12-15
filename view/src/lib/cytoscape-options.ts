@@ -1,14 +1,13 @@
 import cytoscape from "cytoscape";
 
 const palette = {
-    default: "#fbbf24",
-    "entry-point": "#a3e635",
-    constructor: "#34d399",
-    "static-initializer": "#818cf8",
-
-    edge: "#d4d4d8",
-    unhighlighted: "#a1a1aa",
-    highlighted: "#f43f5e"
+    entryPoint: "#a3e635", // lime-400
+    constructor: "#34d399", // emerald-400
+    method: "#fbbf24", // amber-400
+    staticInitializer: "#818cf8", // indigo-400
+    instanceInitializer: "#38bdf8", // sky-400
+    grey: "#a1a1aa", // zinc-400
+    highlighted: "#f43f5e" // rose-500
 };
 
 export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
@@ -18,7 +17,7 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
         {
             selector: ".node",
             style: {
-                "background-color": palette.default,
+                "background-color": palette.method,
                 width: "16px",
                 height: "16px",
                 label: "data(label)",
@@ -27,24 +26,27 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
                 color: "white",
                 "text-valign": "bottom",
                 "text-margin-y": 2,
-                "text-background-color": "black", // Set the background color for label
+                "text-background-color": "black",
                 "text-background-opacity": 0.5,
-                "text-background-padding": "1px", // Padding around the label
-                "text-background-shape": "roundrectangle" // Shape of the background
+                "text-background-padding": "1px",
+                "text-background-shape": "roundrectangle"
             }
         },
         {
             selector: ".parent-node",
             style: {
-                "background-color": "#f4f4f5",
+                "background-color": "#000000",
+                "background-opacity": 0.10,
                 "border-style": "dashed",
-                "border-color": "#e4e4e7",
+                "border-color": "#000000",
+                "border-opacity": 0.10,
+                "border-position": "inside",
                 shape: "round-rectangle",
                 label: "data(label)",
                 "font-family": "monospace",
                 "font-size": "8px",
                 "font-weight": "bold",
-                color: "#e4e4e7",
+                color: palette.grey,
                 "text-valign": "top",
                 "text-margin-y": -2,
                 "text-background-opacity": 0
@@ -53,7 +55,7 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
         {
             selector: ".entry-point",
             style: {
-                "background-color": palette["entry-point"]
+                "background-color": palette.entryPoint
             }
         },
         {
@@ -65,14 +67,26 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
         {
             selector: ".static-initializer",
             style: {
-                "background-color": palette["static-initializer"]
+                "background-color": palette.staticInitializer
+            }
+        },
+        {
+            selector: ".instance-initializer",
+            style: {
+                "background-color": palette.instanceInitializer
+            }
+        },
+        {
+            selector: ".unanalyzed",
+            style: {
+                shape: "round-diamond"
             }
         },
         {
             selector: "edge",
             style: {
-                "line-color": palette.edge,
-                "target-arrow-color": palette.edge,
+                "line-color": palette.grey,
+                "target-arrow-color": palette.grey,
                 "target-arrow-shape": "chevron",
                 width: 1,
                 "curve-style": "straight",
@@ -98,7 +112,7 @@ export const CytoscapeOptions: cytoscape.CytoscapeOptions = {
         {
             selector: ".unhighlighted",
             style: {
-                "background-color": palette.unhighlighted
+                "background-color": palette.grey
             }
         },
         {

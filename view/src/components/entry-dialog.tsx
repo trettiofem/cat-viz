@@ -29,7 +29,8 @@ export function EntryDialog() {
         const entryPackage = entryPackageField.current?.value ?? "";
         const entryMethod = entryMethodField.current?.value ?? "";
 
-        root.update({ ...root, entryPackage, entryMethod });
+        // Not needed since "set-entry" will refresh the shared state
+        // root.update({ ...root, entryPackage, entryMethod });
         vscode.postMessage({
             type: "set-entry",
             entryMethod, entryPackage

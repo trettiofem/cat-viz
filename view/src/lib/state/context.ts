@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export type Layout = "cose" | "breadthfirst" | "circle" | "grid";
+export type Layout = "breadthfirst" | "cose" | "circle" | "grid";
 export type Depth = "package" | "class" | "method";
 
 export interface Identifier {
@@ -11,9 +11,10 @@ export interface Identifier {
 
 export interface Node {
     id: Identifier;
+    // TODO: type: string;
     path: string;
     line: number;
-    params: { [key in string]: string };
+    params: { [key in string]: string }; // TODO: params: { id: string, type: string }[];
     kind:
         | "entry-point"
         | "constructor"
@@ -43,6 +44,7 @@ export interface RootState {
 
     layout: Layout;
     highlightedNode: string;
+    panTo: string;
     panViewport: boolean;
     depth: Depth;
     

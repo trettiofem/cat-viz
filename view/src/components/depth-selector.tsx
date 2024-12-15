@@ -76,7 +76,7 @@ export function DepthSelector() {
                                     key={option.value}
                                     value={option.value}
                                     onSelect={(next) => {
-                                        root.update({ ...root, highlightedNode: "", depth: next as Depth });
+                                        root.update({ ...root, highlightedNode: "", panTo: "", depth: next as Depth });
                                         setOpen(false);
                                     }}
                                 >

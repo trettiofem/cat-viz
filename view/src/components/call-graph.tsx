@@ -35,7 +35,7 @@ export function CallGraphContainer() {
         const node = e.target as cytoscape.NodeSingular;
 
         if (!node.hasClass("parent-node")) {
-            root.update({ ...root, highlightedNode: node.id() });
+            root.update({ ...root, highlightedNode: node.id(), panTo: node.id() });
         }
     });
 
@@ -96,7 +96,7 @@ export function CallGraphContainer() {
                 case "package":
                     next = { data: { id, label: id }, classes: ["node"] };
                     break;
-                case "class":
+                case "class": 
                     next = {
                         data: {
                             id,
@@ -124,6 +124,11 @@ export function CallGraphContainer() {
                     break;
             }
 
+            // Check if node is derived from a file that hasn't been analyzed yet
+            if (!root.files.includes(node.path)) {
+                (next.classes as string[]).push("unanalyzed");
+            }
+
             cy.add(next);
             nodes.add(id);
         }
@@ -147,10 +152,12 @@ export function CallGraphContainer() {
         cy.layout({
             name: root.layout,
             spacingFactor: 0.5,
+            nodeDimensionsIncludeLabels: true,
+            circle: true,
             animate: false
         }).run();
         initCytoscape(cy);
-    }, [root.graph, root.depth, root.layout]);
+    }, [root.graph, root.depth, root.layout, root.files]);
 
     // Update highlighting
     useEffect(() => {
@@ -198,17 +205,23 @@ export function CallGraphContainer() {
                 visit(startNode);
                 startNode.addClass("start-node");
             }
-
-            // Pan viewport to the start node
-            if (root.panViewport || isParent) {
-                cy.animate({
-                    center: { eles: startNode },
-                    duration: 250,
-                    easing: "ease-in-out"
-                });
-            }
         }
-    }, [cy, root.highlightedNode, root.panViewport]);
+    }, [cy, root.highlightedNode]);
+
+    // Pan viewport
+    useEffect(() => {
+        if (root.panTo !== "" && root.panViewport) {
+            const node = cy.nodes(`[id="${root.panTo}"]`)[0];
+            if (!node) return;
+
+            cy.animate({
+                zoom: 3,
+                center: { eles: node },
+                duration: 250,
+                easing: "ease-in-out"
+            });
+        }
+    }, [cy, root.panTo, root.panViewport])
 
     const updateCallGraph = (msg: MessageEvent) => {
         const data = msg.data;
@@ -231,7 +244,7 @@ export function CallGraphContainer() {
         window.addEventListener("message", updateCallGraph);
         return () => window.removeEventListener("message", updateCallGraph);
     });
-    
+
     return (
         <>
             <div className="w-dvw h-dvh" id="id" ref={container}></div>

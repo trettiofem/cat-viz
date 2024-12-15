@@ -20,7 +20,7 @@ async function refreshGraph(state: StateManager) {
     try {
         const currentState = state.getState();
         const graph = (await api("/callgraph", currentState)) as CallGraph;
-
+        
         ViewPanel.currentPanel?.sendMessage({
             type: "set-state",
             graph,
