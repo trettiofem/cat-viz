@@ -20,7 +20,6 @@ const visibilitySymbols: {
     static: "$"
 };
 
-// TODO: rename file
 // TODO: when updating graph, unhighlight nodes that don't exist anymore!
 export function CallGraphContainer({ cy, initCytoscape }: CallGraphContainerProps) {
     const root = useContext(RootContext);
@@ -121,6 +120,7 @@ export function CallGraphContainer({ cy, initCytoscape }: CallGraphContainerProp
                         data: {
                             id,
                             label: `${visibilitySymbols[node.visibility]}${id}`,
+                            type: node.type,
                             parent: `parent(${getCompleteID(node.id, "class")})`,
                             path: node.path,
                             line: node.line,

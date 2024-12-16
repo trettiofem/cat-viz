@@ -19,8 +19,3 @@ export function getUri(
 ) {
     return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
 }
-
-// TODO: https://code.visualstudio.com/api/extension-guides/tree-view#activation
-// "activationEvents": [
-//     "onView:nodeDependencies",
-// ]

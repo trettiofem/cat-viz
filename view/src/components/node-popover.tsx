@@ -17,11 +17,10 @@ export interface NodePopoverProps {
 }
 
 const labels: { [key in string]: string } = {
-    parent: "Parent",
-    id: "ID",
+    type: "Return type",
     path: "Path",
     line: "Line",
-    paramTypes: "Parameter types",
+    params: "Parameters",
     kind: "Kind",
     visibility: "Visibility"
 };
@@ -70,6 +69,18 @@ export function NodePopover({ open, onClose, data }: NodePopoverProps) {
               !root.files.includes(data.node.path)
             : true;
 
+    const formatParams = (params: { id: string; type: string }[]): string => {
+        if (params.length === 0) {
+            return "(empty)";
+        }
+
+        const list = params
+            .map((param) => `${param.type} ${param.id}`)
+            .join(", ");
+
+        return `(${list})`;
+    };
+
     return (
         <Popover open={open} onOpenChange={onClose} modal>
             <PopoverAnchor asChild>
@@ -86,17 +97,19 @@ export function NodePopover({ open, onClose, data }: NodePopoverProps) {
 
                 <div className="flex flex-col items-start">
                     {Object.keys(data.node).map((key) =>
-                        key === "id" || key === "label" ? (
-                            <></> // TODO: key?
-                        ) : (
+                        Object.keys(labels).includes(key) ? (
                             <p key={key}>
-                                {labels[key] ? labels[key] : key}:{" "}
+                                {labels[key]}:{" "}
                                 <span className="font-mono">
-                                    {data.node[key].toString() !== ""
-                                        ? data.node[key].toString()
-                                        : "(empty)"}
+                                    {key === "params"
+                                        ? formatParams(data.node[key])
+                                        : data.node[key].toString() !== ""
+                                          ? data.node[key].toString()
+                                          : "(empty)"}
                                 </span>
                             </p>
+                        ) : (
+                            <></>
                         )
                     )}
                 </div>

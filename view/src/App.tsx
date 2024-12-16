@@ -1,4 +1,4 @@
-import { CallGraphContainer } from "@/components/call-graph";
+import { CallGraphContainer } from "@/components/call-graph-container";
 import { SettingsMenu } from "./components/settings-menu";
 import { RootStateProvider } from "./lib/state/provider";
 import { Search } from "./components/search";

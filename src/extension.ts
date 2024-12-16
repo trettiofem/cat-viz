@@ -56,6 +56,7 @@ export function activate(context: ExtensionContext) {
         }
     };
 
+    // TODO: make all commands other than "Open Call Graph" inaccessible from the command palette
     context.subscriptions.push(
         commands.registerCommand("cat-viz.open", async () => {
             try {

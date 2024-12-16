@@ -11,10 +11,10 @@ export interface Identifier {
 
 export interface Node {
     id: Identifier;
-    // TODO: type: string;
+    type: string;
     path: string;
     line: number;
-    params: { [key in string]: string }; // TODO: params: { id: string, type: string }[];
+    params: { id: string; type: string }[];
     kind:
         | "entry-point"
         | "constructor"
@@ -47,7 +47,7 @@ export interface RootState {
     panTo: string;
     panViewport: boolean;
     depth: Depth;
-    
+
     update: (next: RootState) => void;
 }
 
