@@ -2,7 +2,11 @@
     "name": "cat-viz",
     "displayName": "cat-viz",
     "description": "Tool for call graph visualization",
-    "version": "0.0.1",
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/trettiofem/cat-viz"
+    },
     "engines": {
         "vscode": "^1.95.0"
     },

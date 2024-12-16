@@ -6,16 +6,13 @@
 ## Table of Contents
 
 - [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
 ### Follow the flow of execution
 
-`cat-viz` highlights the flow of execution, allowing the user to get a good grasp of how the analyzed program is structured.
+`cat-viz` highlights the flow of execution, allowing the user to get a good grasp of how the analyzed program is structured. Round nodes represent methods in files which are included in the analysis, while rhombus-shaped nodes represent methods in files which are not included in the analysis.
 
 ![Dependencies](res/highlight.png)
 
@@ -37,56 +34,6 @@
 
 ![Dependencies](res/search.png)
 
-## Installation
-
-```sh
-# Clone the repo
-gh repo clone trettiofem/cat-viz
-cd cat-viz
-
-# Install dependencies
-npm install
-cd view
-npm install
-cd ..
-
-```
-
-## Usage
-
-```sh
-# Follow the steps below if you are interested in the web view component.
-# Navigate into the web view component
-cd view
-
-# Start local development server
-npx vite
-
-# Build web view
-npx vite build
-
-# Run build server
-npx vite build --watch
-
-# Follow the steps below if you are interested in the vscode extension.
-# Open project in vscode
-code .
-
-# Press F5 to debug the extension
-
-# Build extension
-# vet ej?
-```
-
-## Contributing
-
-We welcome contributions to cat-viz! If you would like to contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature/fix: git checkout -b feature/your-feature.
-3. Commit your changes and push to your forked repository.
-4. Create a pull request detailing your changes.
-
 ## License
 
-CAT is released under the BSD 3-Clause License.
+`cat-viz` is released under the BSD 3-Clause License.
