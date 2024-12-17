@@ -66,6 +66,7 @@ export function NodePopover({ open, onClose, data }: NodePopoverProps) {
         root.depth === "method"
             ? data.node.path !== "<Unknown Source>" &&
               !(data.node.path as string)?.startsWith("jrt") &&
+              !(data.node.path as string)?.startsWith("jar") &&
               !root.files.includes(data.node.path)
             : true;
 

@@ -12,6 +12,8 @@ export async function api(path: string, body?: any): Promise<any> {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: body ? JSON.stringify(body) : ""
+    }).catch((e) => {
+        throw new Error("Cannot establish a connection to the server. Is the server running?");
     });
     const res = (await _res.json()) as CATResponse;
 
